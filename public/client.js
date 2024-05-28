@@ -1,14 +1,21 @@
 const socket = io();
+let userId;
 
 socket.on('connect', () => {
     console.log('Connected to the server');
+    userId = prompt('Enter your user ID:');
 });
 
-let roomId; // รหัสห้อง
-let userId; // รหัสผู้ใช้
+socket.on('disconnect', () => {
+    rooms.forEach((users, roomId) => {
+        if (users.has(userId)) {
+            users.delete(userId);
+            socket.to(roomId).emit('chat-message', { userId: 'system', msg: `User ${userId} has left the room.` });
+        }
+    });
+});
 
 function joinRoom(roomId) {
-    userId = prompt('Enter your user ID:');
     socket.emit('join-room', roomId, userId);
 }
 

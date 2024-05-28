@@ -35,9 +35,9 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         rooms.forEach((users, roomId) => {
-            if (users.has(socket.userId)) {
-                users.delete(socket.userId);
-                socket.to(roomId).emit('chat-message', { userId: 'system', msg: `User ${socket.userId} has left the room.` });
+            if (users.has(userId)) {
+                users.delete(userId);
+                socket.to(roomId).emit('chat-message', { userId: 'system', msg: `User ${userId} has left the room.` });
             }
         });
     });
