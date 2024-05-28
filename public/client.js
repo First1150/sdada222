@@ -16,7 +16,6 @@ function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
         socket.emit('create-room', roomName);
-        joinRoom(roomName);
     }
 }
 
@@ -32,6 +31,7 @@ socket.on('room-created', ({ roomId, roomName }) => {
     roomButton.textContent = roomName;
     
     document.getElementById('room-selection').appendChild(roomButton);
+    joinRoom(roomId);
 });
 
 document.getElementById('join-room-button').addEventListener('click', () => {
