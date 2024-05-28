@@ -16,9 +16,8 @@ function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
         socket.emit('create-room', roomName);
-        socket.emit('join-room', roomName, userId);
-    }
-    
+    }roomId = roomName;
+    joinRoom(roomId);
 }
 
 socket.on('chat-message', ({ userId, msg }) => {
