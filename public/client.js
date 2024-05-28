@@ -26,13 +26,6 @@ socket.on('chat-message', ({ userId, msg }) => {
 });
 
 
-function createRoom() {
-    const roomName = prompt('Enter room name:');
-    if (roomName) {
-        socket.emit('create-room', roomName);
-    }
-}
-
 socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
@@ -44,7 +37,6 @@ socket.on('room-created', ({ roomId, roomName }) => {
     // Automatically join the room after creating it
     joinRoom(roomId);
 });
-
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
