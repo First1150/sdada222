@@ -16,7 +16,9 @@ function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
         socket.emit('create-room', roomName);
+        socket.emit('join-room', roomName, userId);
     }
+    joinRoom(roomName);
 }
 
 socket.on('chat-message', ({ userId, msg }) => {
@@ -30,7 +32,7 @@ socket.on('room-created', ({ roomId, roomName }) => {
     roomButton.textContent = roomName;
     
     document.getElementById('room-selection').appendChild(roomButton);
-    joinRoom(roomName);
+    
 });
 
 document.getElementById('join-room-button').addEventListener('click', () => {
