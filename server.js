@@ -21,12 +21,6 @@ io.on('connection', (socket) => {
         }
         rooms.get(roomId).add(userId);
         socket.to(roomId).emit('chat-message', { userId: 'system', msg: `User ${userId} has joined the room.` });
-        
-        // Emit all previous messages in the room to the user who just joined
-        const messagesInRoom = messages.get(roomId) || [];
-        messagesInRoom.forEach(message => {
-            socket.emit('chat-message', message);
-        });
     });
 
     socket.on('create-room', (roomName) => {
@@ -36,14 +30,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat-message', (roomId, userId, msg) => {
-        const message = { userId, msg };
-        // Store the message
-        if (!messages.has(roomId)) {
-            messages.set(roomId, []);
-        }
-        messages.get(roomId).push(message);
-        // Emit the chat message to everyone in the room, including the sender
-        io.to(roomId).emit('chat-message', message);
+        socket.to(roomId).emit('chat-message', { userId, msg });
     });
 
     socket.on('disconnect', () => {
@@ -55,7 +42,6 @@ io.on('connection', (socket) => {
         });
     });
 });
-
 
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
