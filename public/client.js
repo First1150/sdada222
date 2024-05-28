@@ -32,6 +32,15 @@ socket.on('room-created', ({ roomId, roomName }) => {
     document.getElementById('room-selection').appendChild(roomButton);
 });
 
+// Listen for previous messages when joining a room
+socket.on('previous-messages', (messages) => {
+    messages.forEach(message => {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = `${message.userId}: ${message.msg}`;
+        document.getElementById('chat-display').appendChild(messageElement);
+    });
+});
+
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
     joinRoom(roomId);
