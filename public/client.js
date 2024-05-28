@@ -24,21 +24,27 @@ socket.on('chat-message', ({ userId, msg }) => {
     messageElement.textContent = `${userId}: ${msg}`;
     document.getElementById('chat-display').appendChild(messageElement);
 });
-socket.on('request-username', () => {
-    const username = prompt('Enter your username:');
-    if (username.trim()) {
-        // ส่งชื่อผู้ใช้กลับไปยังเซิร์ฟเวอร์
-        socket.emit('set-username', roomId, username);
-    }
-});
 
+
+function createRoom() {
+    const roomName = prompt('Enter room name:');
+    if (roomName) {
+        socket.emit('create-room', roomName);
+    }
+}
 
 socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
-    
+    roomButton.addEventListener('click', () => {
+        joinRoom(roomId); // เพิ่มการเรียกใช้งานฟังก์ชัน joinRoom เมื่อกดปุ่มห้อง
+    });
     document.getElementById('room-selection').appendChild(roomButton);
+
+    // Automatically join the room after creating it
+    joinRoom(roomId);
 });
+
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
