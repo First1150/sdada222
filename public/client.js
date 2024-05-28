@@ -17,6 +17,7 @@ function createRoom() {
     if (roomName) {
         socket.emit('create-room', roomName);
     }
+    joinRoom(roomName);
 }
 
 socket.on('chat-message', ({ userId, msg }) => {
@@ -25,13 +26,11 @@ socket.on('chat-message', ({ userId, msg }) => {
     document.getElementById('chat-display').appendChild(messageElement);
 });
 
-
 socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
     
     document.getElementById('room-selection').appendChild(roomButton);
-    joinRoom(roomId);
 });
 
 document.getElementById('join-room-button').addEventListener('click', () => {
