@@ -9,13 +9,14 @@ let userId; // รหัสผู้ใช้
 
 function joinRoom(roomId) {
     userId = prompt('Enter your user ID:');
-    socket.emit('join-room', roomId); // ส่ง roomId เท่านั้น
+    socket.emit('join-room', roomId, userId); // ส่ง roomId และ userId ไปยังเซิร์ฟเวอร์
 }
+
 
 function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
-        socket.emit('create-room', roomName); // ส่งชื่อห้องไปยังเซิร์ฟเวอร์
+        socket.emit('create-room', roomName, userId); // ส่งชื่อห้องและ userId ไปยังเซิร์ฟเวอร์
     }
 }
 
