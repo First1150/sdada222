@@ -9,15 +9,22 @@ let userId; // รหัสผู้ใช้
 
 function joinRoom(roomId) {
     userId = prompt('Enter your user ID:');
-    socket.emit('join-room', roomId, userId); // ส่ง roomId และ userId ไปยังเซิร์ฟเวอร์
+    if (roomId && userId) { // ตรวจสอบค่า roomId และ userId
+        socket.emit('join-room', roomId, userId); // ส่ง roomId และ userId ไปยังเซิร์ฟเวอร์
+    } else {
+        alert('Please enter both room ID and user ID.'); // แสดงข้อความแจ้งเตือนหากไม่ได้ป้อนค่า
+    }
 }
 
 function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
         socket.emit('create-room', roomName); // ส่งชื่อห้องไปยังเซิร์ฟเวอร์
+    } else {
+        alert('Please enter a room name.'); // แสดงข้อความแจ้งเตือนหากไม่ได้ป้อนค่า
     }
 }
+
 
 socket.on('chat-message', ({ senderId, msg }) => {
     const messageElement = document.createElement('div');
