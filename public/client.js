@@ -31,16 +31,17 @@ socket.on('chat-message', ({ userId, msg }) => {
     document.getElementById('chat-display').appendChild(messageElement);
 });
 
-socket.on('room-created', ({ roomId, roomName }) => {
+socket.on('room-created', ({ roomId: createdRoomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
     roomButton.addEventListener('click', () => {
-        joinRoom(roomId);
+        joinRoom(createdRoomId);
     });
     document.getElementById('room-selection').appendChild(roomButton);
 
     // Check if the user is the room creator
     if (userId !== undefined && isRoomCreator) {
+        roomId = createdRoomId; // Set the created room ID
         joinRoom(roomId);
     }
 });
