@@ -29,15 +29,12 @@ socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
     roomButton.addEventListener('click', () => {
-        const userId = prompt('Enter your user ID:');
-        if (userId) {
-            joinRoom(roomId, userId);
-        }
+        // Automatically join the created room
+        joinRoom(roomId);
     });
     document.getElementById('room-selection').appendChild(roomButton);
-    // Automatically join the created room
-    joinRoom(roomId); // Call joinRoom function to join the room automatically
 });
+
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
