@@ -24,17 +24,21 @@ socket.on('chat-message', ({ userId, msg }) => {
     messageElement.textContent = `${userId}: ${msg}`;
     document.getElementById('chat-display').appendChild(messageElement);
 });
+socket.on('request-username', () => {
+    const username = prompt('Enter your username:');
+    if (username.trim()) {
+        // ส่งชื่อผู้ใช้กลับไปยังเซิร์ฟเวอร์
+        socket.emit('set-username', roomId, username);
+    }
+});
+
 
 socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
-    roomButton.addEventListener('click', () => {
-        // Automatically join the created room
-        joinRoom(roomId);
-    });
+    
     document.getElementById('room-selection').appendChild(roomButton);
 });
-
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
