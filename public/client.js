@@ -1,13 +1,12 @@
 const socket = io();
-
-socket.on('connect', () => {
-    console.log('Connected to the server');
-});
-
 let roomId; // รหัสห้อง
 let userId; // รหัสผู้ใช้
+let isRoomCreator = false; // เพิ่มตัวแปรเพื่อตรวจสอบว่าผู้ใช้เป็นผู้สร้างห้องหรือไม่
 
-let isRoomCreator = false;
+function joinRoom(roomId) {
+    userId = prompt('Enter your user ID:');
+    socket.emit('join-room', roomId, userId);
+}
 
 function createRoom() {
     const roomName = prompt('Enter room name:');
@@ -15,6 +14,22 @@ function createRoom() {
         socket.emit('create-room', roomName);
     }
 }
+
+socket.on('connect', () => {
+    console.log('Connected to the server');
+    userId = prompt('Enter your user ID:');
+
+    // Check if the user is the room creator before joining
+    if (isRoomCreator && roomId) {
+        joinRoom(roomId);
+    }
+});
+
+socket.on('chat-message', ({ userId, msg }) => {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = `${userId}: ${msg}`;
+    document.getElementById('chat-display').appendChild(messageElement);
+});
 
 socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
@@ -24,23 +39,11 @@ socket.on('room-created', ({ roomId, roomName }) => {
     });
     document.getElementById('room-selection').appendChild(roomButton);
 
-    // Check if the user is the room creator before joining
-    if (isRoomCreator) {
+    // Check if the user is the room creator
+    if (userId !== undefined && isRoomCreator) {
         joinRoom(roomId);
     }
 });
-
-socket.on('connect', () => {
-    console.log('Connected to the server');
-    userId = prompt('Enter your user ID:');
-});
-
-function joinRoom(roomId) {
-    if (!userId) {
-        userId = prompt('Enter your user ID:');
-    }
-    socket.emit('join-room', roomId, userId);
-}
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
@@ -49,13 +52,7 @@ document.getElementById('join-room-button').addEventListener('click', () => {
 
 document.getElementById('create-room-button').addEventListener('click', () => {
     createRoom();
-    isRoomCreator = true;
-});
-
-socket.on('chat-message', ({ userId, msg }) => {
-    const messageElement = document.createElement('div');
-    messageElement.textContent = `${userId}: ${msg}`;
-    document.getElementById('chat-display').appendChild(messageElement);
+    isRoomCreator = true; // Set the user as the room creator
 });
 
 document.getElementById('send-button').addEventListener('click', () => {
@@ -73,4 +70,3 @@ document.getElementById('send-button').addEventListener('click', () => {
         document.getElementById('message-input').value = '';
     }
 });
-
