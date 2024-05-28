@@ -18,7 +18,7 @@ function createRoom() {
         socket.emit('create-room', roomName);
         socket.emit('join-room', roomName, userId);
     }
-    joinRoom(roomName);
+    
 }
 
 socket.on('chat-message', ({ userId, msg }) => {
