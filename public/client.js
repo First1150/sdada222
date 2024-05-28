@@ -12,14 +12,12 @@ function joinRoom(roomId) {
     socket.emit('join-room', roomId, userId); // ส่ง roomId และ userId ไปยังเซิร์ฟเวอร์
 }
 
-
 function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
-        socket.emit('create-room', roomName, userId); // ส่งชื่อห้องและ userId ไปยังเซิร์ฟเวอร์
+        socket.emit('create-room', roomName); // ส่งชื่อห้องไปยังเซิร์ฟเวอร์
     }
 }
-
 
 socket.on('chat-message', ({ senderId, msg }) => {
     const messageElement = document.createElement('div');
@@ -49,7 +47,7 @@ document.getElementById('create-room-button').addEventListener('click', createRo
 
 document.getElementById('send-button').addEventListener('click', () => {
     const message = document.getElementById('message-input').value;
-    if (message.trim()) {
+    if (message.trim() && roomId && userId) { // ตรวจสอบว่ามี roomId และ userId ที่ถูกต้อง
         socket.emit('chat-message', roomId, userId, message);
         document.getElementById('message-input').value = '';
     }
@@ -58,7 +56,7 @@ document.getElementById('send-button').addEventListener('click', () => {
 document.getElementById('message-input').addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         const message = document.getElementById('message-input').value;
-        if (message.trim()) {
+        if (message.trim() && roomId && userId) { // ตรวจสอบว่ามี roomId และ userId ที่ถูกต้อง
             socket.emit('chat-message', roomId, userId, message);
             document.getElementById('message-input').value = '';
         }
