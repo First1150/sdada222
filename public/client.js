@@ -16,6 +16,7 @@ function createRoom() {
     const roomName = prompt('Enter room name:');
     if (roomName) {
         socket.emit('create-room', roomName);
+        joinRoom(roomName);
     }
 }
 
@@ -29,13 +30,8 @@ socket.on('chat-message', ({ userId, msg }) => {
 socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
-    roomButton.addEventListener('click', () => {
-        joinRoom(roomId); // เพิ่มการเรียกใช้งานฟังก์ชัน joinRoom เมื่อกดปุ่มห้อง
-    });
+    
     document.getElementById('room-selection').appendChild(roomButton);
-
-    // Automatically join the room after creating it
-    joinRoom(roomId);
 });
 
 document.getElementById('join-room-button').addEventListener('click', () => {
