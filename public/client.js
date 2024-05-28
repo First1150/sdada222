@@ -42,9 +42,10 @@ socket.on('room-created', ({ roomId: createdRoomId, roomName }) => {
     // Check if the user is the room creator
     if (userId !== undefined && isRoomCreator) {
         roomId = createdRoomId; // Set the created room ID
-        joinRoom(roomId);
+        // Wait for the user to connect before joining
     }
 });
+
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
