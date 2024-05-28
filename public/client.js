@@ -1,7 +1,11 @@
 const socket = io();
+
+socket.on('connect', () => {
+    console.log('Connected to the server');
+});
+
 let roomId; // รหัสห้อง
 let userId; // รหัสผู้ใช้
-let isRoomCreator = false; // เพิ่มตัวแปรเพื่อตรวจสอบว่าผู้ใช้เป็นผู้สร้างห้องหรือไม่
 
 function joinRoom(roomId) {
     userId = prompt('Enter your user ID:');
@@ -15,47 +19,26 @@ function createRoom() {
     }
 }
 
-socket.on('connect', () => {
-    console.log('Connected to the server');
-    userId = prompt('Enter your user ID:');
-
-    // Check if the user is the room creator before joining
-    if (isRoomCreator && roomId) {
-        joinRoom(roomId);
-    }
-});
-
 socket.on('chat-message', ({ userId, msg }) => {
     const messageElement = document.createElement('div');
     messageElement.textContent = `${userId}: ${msg}`;
     document.getElementById('chat-display').appendChild(messageElement);
 });
 
-socket.on('room-created', ({ roomId: createdRoomId, roomName }) => {
+socket.on('room-created', ({ roomId, roomName }) => {
     const roomButton = document.createElement('button');
     roomButton.textContent = roomName;
-    roomButton.addEventListener('click', () => {
-        joinRoom(createdRoomId);
-    });
+    
     document.getElementById('room-selection').appendChild(roomButton);
-
-    // Check if the user is the room creator
-    if (userId !== undefined && isRoomCreator) {
-        roomId = createdRoomId; // Set the created room ID
-        // Wait for the user to connect before joining
-    }
+    joinRoom(roomName);
 });
-
 
 document.getElementById('join-room-button').addEventListener('click', () => {
     roomId = prompt('Enter room ID:');
     joinRoom(roomId);
 });
 
-document.getElementById('create-room-button').addEventListener('click', () => {
-    createRoom();
-    isRoomCreator = true; // Set the user as the room creator
-});
+document.getElementById('create-room-button').addEventListener('click', createRoom);
 
 document.getElementById('send-button').addEventListener('click', () => {
     const message = document.getElementById('message-input').value;
@@ -72,3 +55,4 @@ document.getElementById('send-button').addEventListener('click', () => {
         document.getElementById('message-input').value = '';
     }
 });
+
